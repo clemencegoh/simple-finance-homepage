@@ -15,16 +15,24 @@ export default function Home() {
     { id: "ACC-002", balance: 500 },
   ]);
 
-  const handleCreateAccount = (initialBalance: number) => {
-    const newId = `ACC-${String(accounts.length + 1).padStart(3, "0")}`;
+  const handleCreateAccount = (id: string, initialBalance: number) => {
+    if (accounts.some(acc => acc.id === id)) {
+      toast({
+        variant: "destructive",
+        title: "Account Creation Failed",
+        description: `An account with ID ${id} already exists.`,
+      });
+      return;
+    }
+
     const newAccount: Account = {
-      id: newId,
+      id,
       balance: initialBalance,
     };
     setAccounts((prev) => [...prev, newAccount]);
     toast({
       title: "Account Created",
-      description: `Account ${newId} created with a balance of $${initialBalance.toFixed(
+      description: `Account ${id} created with a balance of $${initialBalance.toFixed(
         2
       )}.`,
     });
@@ -86,16 +94,16 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 container mx-auto p-4 md:p-8">
-        <div className="grid gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-1 flex flex-col gap-8">
+        <div className="grid gap-8 lg:grid-cols-5">
+          <div className="lg:col-span-3 flex flex-col gap-8">
+            <AccountList accounts={accounts} />
+          </div>
+          <div className="lg:col-span-2 flex flex-col gap-8">
             <AccountCreator onCreateAccount={handleCreateAccount} />
             <TransactionForm
               accounts={accounts}
               onExecuteTransaction={handleExecuteTransaction}
             />
-          </div>
-          <div className="lg:col-span-2">
-            <AccountList accounts={accounts} />
           </div>
         </div>
       </main>

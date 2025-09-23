@@ -21,28 +21,30 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Coins } from "lucide-react";
+import { Coins, CreditCard } from "lucide-react";
 
 const formSchema = z.object({
+  id: z.string().min(1, "ID is required."),
   balance: z.coerce
     .number({ invalid_type_error: "Please enter a number." })
     .min(0, "Initial balance must be non-negative."),
 });
 
 type AccountCreatorProps = {
-  onCreateAccount: (initialBalance: number) => void;
+  onCreateAccount: (id: string, initialBalance: number) => void;
 };
 
 export function AccountCreator({ onCreateAccount }: AccountCreatorProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: "",
       balance: 0,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    onCreateAccount(values.balance);
+    onCreateAccount(values.id, values.balance);
     form.reset();
   }
 
@@ -51,12 +53,31 @@ export function AccountCreator({ onCreateAccount }: AccountCreatorProps) {
       <CardHeader>
         <CardTitle>Create New Account</CardTitle>
         <CardDescription>
-          Start by creating a new account with an initial balance.
+          Start by creating a new account with an ID and initial balance.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account ID</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input placeholder="ACC-003" className="pl-9" {...field} />
+                    </div>
+                  </FormControl>
+                  <FormDescription>
+                    Enter a unique identifier for the new account.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="balance"

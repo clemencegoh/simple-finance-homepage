@@ -1,4 +1,4 @@
-# **App Name**: Accountable
+# **App Name**: FinSim
 
 ## Core Features:
 
