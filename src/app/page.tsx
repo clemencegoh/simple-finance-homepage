@@ -100,7 +100,7 @@ export default function Home() {
         amount,
         timestamp: new Date(),
       };
-      setTransactions((prev) => [newTransaction, ...prev]);
+      setTransactions([newTransaction, ...transactions]);
 
       return newAccounts;
     });
@@ -110,14 +110,14 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 container mx-auto p-4 md:p-8">
-        <div className="grid gap-8 lg:grid-cols-5">
-          <div className="lg:col-span-3 flex flex-col gap-8">
+        <div className="grid gap-4 lg:grid-cols-5">
+          <div className="lg:col-span-3 flex flex-col gap-4">
             <AccountList
               accounts={accounts}
               onOpenCreateAccountModal={() => setIsCreateAccountModalOpen(true)}
             />
           </div>
-          <div className="lg:col-span-2 flex flex-col gap-8">
+          <div className="lg:col-span-2 flex flex-col gap-4">
             <TransactionForm
               accounts={accounts}
               onExecuteTransaction={handleExecuteTransaction}

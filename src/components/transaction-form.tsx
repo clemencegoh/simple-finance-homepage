@@ -82,7 +82,6 @@ export function TransactionForm({
       data.destinationAccountId,
       data.amount
     );
-    form.reset();
   }
   
   const hasEnoughAccounts = accounts.length >= 2;
@@ -98,7 +97,7 @@ export function TransactionForm({
       <CardContent>
         {hasEnoughAccounts ? (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
               <FormField
                 control={form.control}
                 name="sourceAccountId"

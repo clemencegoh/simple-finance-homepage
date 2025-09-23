@@ -16,6 +16,7 @@ import {
 import type { Account } from "@/lib/types";
 import { Landmark, Plus } from "lucide-react";
 import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
 
 type AccountListProps = {
   accounts: Account[];
@@ -40,26 +41,28 @@ export function AccountList({ accounts, onOpenCreateAccountModal }: AccountListP
       </CardHeader>
       <CardContent>
         {accounts.length > 0 ? (
-          <div className="border rounded-md">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Account ID</TableHead>
-                  <TableHead className="text-right">Balance</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {accounts.map((account) => (
-                  <TableRow key={account.id}>
-                    <TableCell className="font-medium">{account.id}</TableCell>
-                    <TableCell className="text-right font-mono">
-                      ${account.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </TableCell>
+          <ScrollArea className="h-72">
+            <div className="border rounded-md">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Account ID</TableHead>
+                    <TableHead className="text-right">Balance</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {accounts.map((account) => (
+                    <TableRow key={account.id}>
+                      <TableCell className="font-medium">{account.id}</TableCell>
+                      <TableCell className="text-right font-mono">
+                        ${account.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </ScrollArea>
         ) : (
           <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8 border border-dashed rounded-md h-full">
             <Landmark className="w-10 h-10 mb-4" />
