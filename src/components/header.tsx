@@ -1,4 +1,5 @@
 import { Banknote } from "lucide-react";
+import { ThemeSwitcher } from "./theme-switcher";
 
 export function Header() {
   return (
@@ -11,6 +12,9 @@ export function Header() {
               Accountable
             </span>
           </a>
+        </div>
+        <div className="flex flex-1 items-center justify-end">
+          <ThemeSwitcher />
         </div>
       </div>
     </header>
