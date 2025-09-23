@@ -37,7 +37,7 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
       </CardHeader>
       <CardContent>
         {transactions.length > 0 ? (
-          <ScrollArea className="h-72">
+          <ScrollArea className="h-48">
             <div className="border rounded-md">
               <Table>
                 <TableHeader>
