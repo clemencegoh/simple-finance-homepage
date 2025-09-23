@@ -24,21 +24,20 @@ import {
 import { Coins, CreditCard } from "lucide-react";
 
 const formSchema = z.object({
-  id: z.string().min(1, "ID is required."),
+  id: z.coerce.number({ invalid_type_error: "ID must be a number." }).int("ID must be an integer.").positive("ID must be positive."),
   balance: z.coerce
     .number({ invalid_type_error: "Please enter a number." })
     .min(0, "Initial balance must be non-negative."),
 });
 
 type AccountCreatorProps = {
-  onCreateAccount: (id: string, initialBalance: number) => void;
+  onCreateAccount: (id: number, initialBalance: number) => void;
 };
 
 export function AccountCreator({ onCreateAccount }: AccountCreatorProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id: "",
       balance: 0,
     },
   });
@@ -53,7 +52,7 @@ export function AccountCreator({ onCreateAccount }: AccountCreatorProps) {
       <CardHeader>
         <CardTitle>Create New Account</CardTitle>
         <CardDescription>
-          Start by creating a new account with an ID and initial balance.
+          Start by creating a new account with a numeric ID and initial balance.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -68,11 +67,11 @@ export function AccountCreator({ onCreateAccount }: AccountCreatorProps) {
                   <FormControl>
                     <div className="relative">
                       <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input placeholder="ACC-003" className="pl-9" {...field} />
+                      <Input type="number" placeholder="12345" className="pl-9" {...field} />
                     </div>
                   </FormControl>
                   <FormDescription>
-                    Enter a unique identifier for the new account.
+                    Enter a unique numeric identifier for the new account.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

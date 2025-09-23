@@ -11,11 +11,11 @@ import { AccountList } from "@/components/account-list";
 export default function Home() {
   const { toast } = useToast();
   const [accounts, setAccounts] = useState<Account[]>([
-    { id: "ACC-001", balance: 1000 },
-    { id: "ACC-002", balance: 500 },
+    { id: 1, balance: 1000 },
+    { id: 2, balance: 500 },
   ]);
 
-  const handleCreateAccount = (id: string, initialBalance: number) => {
+  const handleCreateAccount = (id: number, initialBalance: number) => {
     if (accounts.some(acc => acc.id === id)) {
       toast({
         variant: "destructive",
@@ -39,8 +39,8 @@ export default function Home() {
   };
 
   const handleExecuteTransaction = (
-    sourceAccountId: string,
-    destinationAccountId: string,
+    sourceAccountId: number,
+    destinationAccountId: number,
     amount: number
   ) => {
     setAccounts((prevAccounts) => {

@@ -33,8 +33,8 @@ import { ArrowLeftRight, Coins } from "lucide-react";
 type TransactionFormProps = {
   accounts: Account[];
   onExecuteTransaction: (
-    sourceAccountId: string,
-    destinationAccountId: string,
+    sourceAccountId: number,
+    destinationAccountId: number,
     amount: number
   ) => void;
 };
@@ -45,10 +45,10 @@ export function TransactionForm({
 }: TransactionFormProps) {
   const FormSchema = z
     .object({
-      sourceAccountId: z.string({
+      sourceAccountId: z.coerce.number({
         required_error: "Please select a source account.",
       }),
-      destinationAccountId: z.string({
+      destinationAccountId: z.coerce.number({
         required_error: "Please select a destination account.",
       }),
       amount: z.coerce
@@ -105,7 +105,7 @@ export function TransactionForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>From Account</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={String(field.value)}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a source account" />
@@ -113,7 +113,7 @@ export function TransactionForm({
                       </FormControl>
                       <SelectContent>
                         {accounts.map((account) => (
-                          <SelectItem key={account.id} value={account.id}>
+                          <SelectItem key={account.id} value={String(account.id)}>
                             {account.id} - Balance: ${account.balance.toFixed(2)}
                           </SelectItem>
                         ))}
@@ -129,7 +129,7 @@ export function TransactionForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>To Account</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={String(field.value)}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a destination account" />
@@ -137,7 +137,7 @@ export function TransactionForm({
                       </FormControl>
                       <SelectContent>
                         {accounts.map((account) => (
-                          <SelectItem key={account.id} value={account.id}>
+                          <SelectItem key={account.id} value={String(account.id)}>
                             {account.id}
                           </SelectItem>
                         ))}
