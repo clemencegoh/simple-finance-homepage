@@ -13,19 +13,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Account } from "@/lib/types";
 import { Landmark, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
+import { useAccounts } from "@/hooks/use-accounts";
 
 type AccountListProps = {
-  accounts: Account[];
   onOpenCreateAccountModal: () => void;
 };
 
-export function AccountList({ accounts, onOpenCreateAccountModal }: AccountListProps) {
+export function AccountList({ onOpenCreateAccountModal }: AccountListProps) {
+  const { accounts } = useAccounts();
   return (
-    <Card className="shadow-lg h-full">
+    <Card className="shadow-lg ">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="grid gap-1">
@@ -41,7 +41,7 @@ export function AccountList({ accounts, onOpenCreateAccountModal }: AccountListP
       </CardHeader>
       <CardContent>
         {accounts.length > 0 ? (
-          <ScrollArea className="h-96">
+          <ScrollArea className="h-64">
             <div className="border rounded-md">
               <Table>
                 <TableHeader>
@@ -52,9 +52,9 @@ export function AccountList({ accounts, onOpenCreateAccountModal }: AccountListP
                 </TableHeader>
                 <TableBody>
                   {accounts.map((account) => (
-                    <TableRow key={account.id}>
-                      <TableCell className="font-medium">{account.id}</TableCell>
-                      <TableCell className="text-right font-mono">
+                    <TableRow key={account.id} data-testid={`row-${account.id}`}>
+                      <TableCell className="font-medium" data-testid={`cell-account-id`}>{account.id}</TableCell>
+                      <TableCell className="text-right font-mono" data-testid={`cell-balance`}>
                         ${account.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>

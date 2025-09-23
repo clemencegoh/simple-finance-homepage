@@ -13,15 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Transaction } from "@/lib/types";
 import { History } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
+import { useTransactions } from "@/hooks/use-transactions";
 
-type TransactionHistoryProps = {
-  transactions: Transaction[];
-};
-
-export function TransactionHistory({ transactions }: TransactionHistoryProps) {
+export function TransactionHistory() {
+  const { transactions } = useTransactions();
   return (
     <Card className="shadow-lg">
       <CardHeader>
@@ -50,21 +47,21 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
                 </TableHeader>
                 <TableBody>
                   {transactions.map((transaction, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">
+                    <TableRow key={transaction.timestamp.toISOString()} data-testid={`row-${transaction.timestamp.toISOString()}`}>
+                      <TableCell className="font-medium" data-testid="cell-source-account-id">
                         {transaction.sourceAccountId}
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium" data-testid="cell-destination-account-id">
                         {transaction.destinationAccountId}
                       </TableCell>
-                      <TableCell className="text-right font-mono">
+                      <TableCell className="text-right font-mono" data-testid="cell-amount">
                         $
                         {transaction.amount.toLocaleString("en-US", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </TableCell>
-                      <TableCell>
+                      <TableCell data-testid="cell-datetime">
                         {transaction.timestamp.toLocaleTimeString()}
                       </TableCell>
                     </TableRow>

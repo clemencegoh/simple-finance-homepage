@@ -1,47 +1,26 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import type { Account, Transaction } from "@/lib/types";
+import type { Transaction } from "@/lib/types";
 import { Header } from "@/components/header";
 import { AccountCreator } from "@/components/account-creator";
 import { TransactionForm } from "@/components/transaction-form";
 import { AccountList } from "@/components/account-list";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { TransactionHistory } from "@/components/transaction-history";
+import { useAccounts } from "@/hooks/use-accounts";
+import { useTransactions } from "@/hooks/use-transactions";
 
 export default function Home() {
   const { toast } = useToast();
-  const [accounts, setAccounts] = useState<Account[]>([
-    { id: 1, balance: 1000 },
-    { id: 2, balance: 500 },
-  ]);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const { accounts, createAccount, setAccounts } = useAccounts();
+  const { addTransaction } = useTransactions();
   const [isCreateAccountModalOpen, setIsCreateAccountModalOpen] =
     useState(false);
 
   const handleCreateAccount = (id: number, initialBalance: number) => {
-    if (accounts.some((acc) => acc.id === id)) {
-      toast({
-        variant: "destructive",
-        title: "Account Creation Failed",
-        description: `An account with ID ${id} already exists.`,
-      });
-      return;
-    }
-
-    const newAccount: Account = {
-      id,
-      balance: initialBalance,
-    };
-    setAccounts((prev) => [...prev, newAccount]);
-    toast({
-      variant: "success",
-      title: "Account Created",
-      description: `Account ${id} created with a balance of $${initialBalance.toFixed(
-        2
-      )}.`,
-    });
+    createAccount(id, initialBalance);
     setIsCreateAccountModalOpen(false);
   };
 
@@ -100,7 +79,7 @@ export default function Home() {
         amount,
         timestamp: new Date(),
       };
-      setTransactions([newTransaction, ...transactions]);
+      addTransaction(newTransaction);
 
       return newAccounts;
     });
@@ -113,26 +92,18 @@ export default function Home() {
         <div className="grid gap-4 lg:grid-cols-5">
           <div className="lg:col-span-3 flex flex-col gap-4">
             <AccountList
-              accounts={accounts}
               onOpenCreateAccountModal={() => setIsCreateAccountModalOpen(true)}
             />
+            <TransactionHistory />
           </div>
-          <div className="lg:col-span-2 flex flex-col gap-4">
+          <div className="lg:col-span-2 h-full justify-center flex flex-col gap-4">
             <TransactionForm
               accounts={accounts}
               onExecuteTransaction={handleExecuteTransaction}
             />
-            <TransactionHistory transactions={transactions} />
           </div>
         </div>
       </main>
-      <footer className="py-6 md:px-8 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-          <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
-            Built with Next.js and ShadCN UI.
-          </p>
-        </div>
-      </footer>
       <Dialog
         open={isCreateAccountModalOpen}
         onOpenChange={setIsCreateAccountModalOpen}
