@@ -36,6 +36,7 @@ export default function Home() {
     };
     setAccounts((prev) => [...prev, newAccount]);
     toast({
+      variant: "success",
       title: "Account Created",
       description: `Account ${id} created with a balance of $${initialBalance.toFixed(
         2
@@ -86,6 +87,7 @@ export default function Home() {
       });
 
       toast({
+        variant: "success",
         title: "Transaction Successful",
         description: `$${amount.toFixed(
           2
