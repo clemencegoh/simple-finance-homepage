@@ -7,6 +7,7 @@ import { Header } from "@/components/header";
 import { AccountCreator } from "@/components/account-creator";
 import { TransactionForm } from "@/components/transaction-form";
 import { AccountList } from "@/components/account-list";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export default function Home() {
   const { toast } = useToast();
@@ -14,9 +15,11 @@ export default function Home() {
     { id: 1, balance: 1000 },
     { id: 2, balance: 500 },
   ]);
+  const [isCreateAccountModalOpen, setIsCreateAccountModalOpen] =
+    useState(false);
 
   const handleCreateAccount = (id: number, initialBalance: number) => {
-    if (accounts.some(acc => acc.id === id)) {
+    if (accounts.some((acc) => acc.id === id)) {
       toast({
         variant: "destructive",
         title: "Account Creation Failed",
@@ -36,6 +39,7 @@ export default function Home() {
         2
       )}.`,
     });
+    setIsCreateAccountModalOpen(false);
   };
 
   const handleExecuteTransaction = (
@@ -96,10 +100,12 @@ export default function Home() {
       <main className="flex-1 container mx-auto p-4 md:p-8">
         <div className="grid gap-8 lg:grid-cols-5">
           <div className="lg:col-span-3 flex flex-col gap-8">
-            <AccountList accounts={accounts} />
+            <AccountList
+              accounts={accounts}
+              onOpenCreateAccountModal={() => setIsCreateAccountModalOpen(true)}
+            />
           </div>
           <div className="lg:col-span-2 flex flex-col gap-8">
-            <AccountCreator onCreateAccount={handleCreateAccount} />
             <TransactionForm
               accounts={accounts}
               onExecuteTransaction={handleExecuteTransaction}
@@ -114,6 +120,14 @@ export default function Home() {
           </p>
         </div>
       </footer>
+      <Dialog
+        open={isCreateAccountModalOpen}
+        onOpenChange={setIsCreateAccountModalOpen}
+      >
+        <DialogContent>
+          <AccountCreator onCreateAccount={handleCreateAccount} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

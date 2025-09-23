@@ -14,20 +14,29 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { Account } from "@/lib/types";
-import { Landmark } from "lucide-react";
+import { Landmark, Plus } from "lucide-react";
+import { Button } from "./ui/button";
 
 type AccountListProps = {
   accounts: Account[];
+  onOpenCreateAccountModal: () => void;
 };
 
-export function AccountList({ accounts }: AccountListProps) {
+export function AccountList({ accounts, onOpenCreateAccountModal }: AccountListProps) {
   return (
     <Card className="shadow-lg h-full">
       <CardHeader>
-        <CardTitle>Account Balances</CardTitle>
-        <CardDescription>
-          A summary of all your accounts and their current balances.
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div className="grid gap-1">
+            <CardTitle>Account Balances</CardTitle>
+            <CardDescription>
+              A summary of all your accounts and their current balances.
+            </CardDescription>
+          </div>
+          <Button size="icon" variant="outline" onClick={onOpenCreateAccountModal} aria-label="Create new account">
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         {accounts.length > 0 ? (
