@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import type { Account } from "@/lib/types";
+import type { Account, Transaction } from "@/lib/types";
 import { Header } from "@/components/header";
 import { AccountCreator } from "@/components/account-creator";
 import { TransactionForm } from "@/components/transaction-form";
 import { AccountList } from "@/components/account-list";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { TransactionHistory } from "@/components/transaction-history";
 
 export default function Home() {
   const { toast } = useToast();
@@ -15,6 +16,7 @@ export default function Home() {
     { id: 1, balance: 1000 },
     { id: 2, balance: 500 },
   ]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isCreateAccountModalOpen, setIsCreateAccountModalOpen] =
     useState(false);
 
@@ -90,6 +92,14 @@ export default function Home() {
         )} transferred from ${sourceAccountId} to ${destinationAccountId}.`,
       });
 
+      const newTransaction: Transaction = {
+        sourceAccountId,
+        destinationAccountId,
+        amount,
+        timestamp: new Date(),
+      };
+      setTransactions((prev) => [newTransaction, ...prev]);
+
       return newAccounts;
     });
   };
@@ -110,6 +120,7 @@ export default function Home() {
               accounts={accounts}
               onExecuteTransaction={handleExecuteTransaction}
             />
+            <TransactionHistory transactions={transactions} />
           </div>
         </div>
       </main>
