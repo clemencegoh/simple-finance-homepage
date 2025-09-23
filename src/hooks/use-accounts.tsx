@@ -1,50 +1,70 @@
 "use client";
 
-import { useState } from "react";
-import { Account } from "@/lib/types";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Account, NewAccount } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
-const initialAccounts: Account[] = [
-  { id: 1, balance: 1000 },
-  { id: 2, balance: 500 },
-  { id: 3, balance: 500 },
-  { id: 4, balance: 500 },
-  { id: 5, balance: 500 },
-  { id: 6, balance: 500 },
-  { id: 7, balance: 500 },
-  { id: 8, balance: 500 },
-  { id: 9, balance: 500 },
-  { id: 0, balance: 500 },
-  { id: 11, balance: 500 },
-];
+const BASE_URL = "http://localhost:8860";
+
+const getAccounts = async (): Promise<Account[]> => {
+    const response = await fetch(`${BASE_URL}/accounts`);
+    if (!response.ok) {
+        throw new Error("Failed to fetch accounts");
+    }
+    return response.json();
+};
+
+const createAccount = async (newAccount: NewAccount): Promise<Account> => {
+    const response = await fetch(`${BASE_URL}/accounts`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify(newAccount),
+    });
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to create account");
+    }
+    return response.json();
+};
 
 export function useAccounts() {
-  const { toast } = useToast();
-  const [accounts, setAccounts] = useState<Account[]>(initialAccounts);
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
 
-  const createAccount = (id: number, initialBalance: number) => {
-    if (accounts.some((acc) => acc.id === id)) {
-      toast({
-        variant: "destructive",
-        title: "Account Creation Failed",
-        description: `Account with ID ${id} already exists.`,
-      });
-      return;
-    }
+    const [accounts, setAccounts] = useState<Account[] | null>(null);
 
-    const newAccount: Account = {
-      id,
-      balance: initialBalance,
-    };
-    setAccounts((prev) => [...prev, newAccount]);
-    toast({
-      variant: "success",
-      title: "Account Created",
-      description: `Account ${id} created with a balance of $${initialBalance.toFixed(
-        2
-      )}.`,
+    const mutation = useMutation<Account, Error, NewAccount>({
+        mutationFn: createAccount,
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ["accounts"] });
+            setAccounts((prevAccounts) => {
+                if (prevAccounts) {
+                    return [...prevAccounts, data];
+                }
+                return [data];
+            });
+            toast({
+                variant: "success",
+                title: "Account Created",
+                description: `Account ${data.account_id} created with a balance of $${data.balance}.`,
+            });
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                title: "Account Creation Failed",
+                description: error.message,
+            });
+        },
     });
-  };
 
-  return { accounts, createAccount, setAccounts } as const;
+    return {
+        accounts: accounts ?? [],
+        isLoading: mutation.isPending,
+        createAccount: mutation.mutate,
+    };
 }

@@ -1,11 +1,16 @@
 export type Account = {
-  id: number;
-  balance: number;
+  account_id: number;
+  balance: string;
+};
+
+export type NewAccount = {
+  account_id: number;
+  initial_balance: string;
 };
 
 export type Transaction = {
-  sourceAccountId: number;
-  destinationAccountId: number;
-  amount: number;
-  timestamp: Date;
+  source_account_id: number;
+  destination_account_id: number;
+  amount: string;
+  timestamp?: string;
 };

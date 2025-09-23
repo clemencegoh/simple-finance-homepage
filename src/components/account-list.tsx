@@ -17,13 +17,14 @@ import { Landmark, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { useAccounts } from "@/hooks/use-accounts";
+import { Skeleton } from "./ui/skeleton";
 
 type AccountListProps = {
   onOpenCreateAccountModal: () => void;
 };
 
 export function AccountList({ onOpenCreateAccountModal }: AccountListProps) {
-  const { accounts } = useAccounts();
+  const { accounts, isLoading } = useAccounts();
   return (
     <Card className="shadow-lg ">
       <CardHeader>
@@ -40,7 +41,13 @@ export function AccountList({ onOpenCreateAccountModal }: AccountListProps) {
         </div>
       </CardHeader>
       <CardContent>
-        {accounts.length > 0 ? (
+        {isLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+        ) : accounts.length > 0 ? (
           <ScrollArea className="h-64">
             <div className="border rounded-md">
               <Table>
@@ -52,10 +59,10 @@ export function AccountList({ onOpenCreateAccountModal }: AccountListProps) {
                 </TableHeader>
                 <TableBody>
                   {accounts.map((account) => (
-                    <TableRow key={account.id} data-testid={`row-${account.id}`}>
-                      <TableCell className="font-medium" data-testid={`cell-account-id`}>{account.id}</TableCell>
+                    <TableRow key={account.account_id} data-testid={`row-${account.account_id}`}>
+                      <TableCell className="font-medium" data-testid={`cell-account-id`}>{account.account_id}</TableCell>
                       <TableCell className="text-right font-mono" data-testid={`cell-balance`}>
-                        ${account.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ${parseFloat(account.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
                   ))}
