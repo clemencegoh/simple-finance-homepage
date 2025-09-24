@@ -116,7 +116,7 @@ export function TransactionForm({
                                             defaultValue={String(field.value)}
                                         >
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger data-testid="source-account-select">
                                                     <SelectValue placeholder="Select a source account" />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -154,7 +154,7 @@ export function TransactionForm({
                                             defaultValue={String(field.value)}
                                         >
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger data-testid="destination-account-select">
                                                     <SelectValue placeholder="Select a destination account" />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -190,6 +190,7 @@ export function TransactionForm({
                                                     className="pl-9"
                                                     step="0.01"
                                                     {...field}
+                                                    data-testid="amount-input"
                                                 />
                                             </div>
                                         </FormControl>
@@ -204,6 +205,7 @@ export function TransactionForm({
                                     form.formState.isSubmitting ||
                                     !hasEnoughAccounts
                                 }
+                                data-testid="transfer-funds-button"
                             >
                                 {form.formState.isSubmitting
                                     ? "Transferring..."

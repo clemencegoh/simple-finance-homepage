@@ -39,9 +39,9 @@ export function TransactionHistory({ transactions }: Readonly<Props>) {
             </CardHeader>
             <CardContent>
                 {transactionsPresent ? (
-                    <ScrollArea className="h-48">
+                    <ScrollArea className="h-64 overflow-auto">
                         <div className="border rounded-md">
-                            <Table>
+                            <Table data-testid="transaction-history-table">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Source</TableHead>
@@ -56,7 +56,9 @@ export function TransactionHistory({ transactions }: Readonly<Props>) {
                                     {transactions?.map((transaction, index) => (
                                         <TableRow
                                             key={transaction?.timestamp}
-                                            data-testid={`row-${transaction?.timestamp}`}
+                                            data-testid={
+                                                "row-transaction-history"
+                                            }
                                         >
                                             <TableCell
                                                 className="font-medium"

@@ -7,12 +7,17 @@ import { TransactionForm } from "@/components/transaction-form";
 import { AccountList } from "@/components/account-list";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { TransactionHistory } from "@/components/transaction-history";
-import { useAccounts } from "@/hooks/use-accounts";
-import { useTransactions } from "@/hooks/use-transactions";
+import { useTransactionsAndAccounts } from "@/hooks/use-transactions-and-accounts";
 
 export default function Home() {
-    const { accounts, createAccount } = useAccounts();
-    const { createTransaction, transactions } = useTransactions();
+    const {
+        accounts,
+        createAccount,
+        isLoading,
+        transactions,
+        createTransaction,
+    } = useTransactionsAndAccounts();
+
     const [isCreateAccountModalOpen, setIsCreateAccountModalOpen] =
         useState(false);
 
@@ -46,6 +51,8 @@ export default function Home() {
                             onOpenCreateAccountModal={() =>
                                 setIsCreateAccountModalOpen(true)
                             }
+                            accounts={accounts}
+                            isLoading={isLoading}
                         />
                         <TransactionHistory transactions={transactions} />
                     </div>

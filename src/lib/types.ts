@@ -3,6 +3,7 @@ export type Account = {
   balance: string;
 };
 
+
 export type NewAccount = {
   account_id: number;
   initial_balance: string;

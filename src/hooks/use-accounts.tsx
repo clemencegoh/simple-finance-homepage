@@ -1,14 +1,16 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Account, NewAccount } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { addOrMergeAccounts } from "@/lib/utils";
 
-const BASE_URL = "http://localhost:8860";
+// We hit our own NextJS Api route
+const BASE_URL = "http://localhost:9002/api";
 
-const getAccounts = async (): Promise<Account[]> => {
-    const response = await fetch(`${BASE_URL}/accounts`);
+const getAccount = async (accountId: number): Promise<Account[]> => {
+    const response = await fetch(`${BASE_URL}/account/${accountId}}`);
     if (!response.ok) {
         throw new Error("Failed to fetch accounts");
     }
@@ -35,7 +37,33 @@ export function useAccounts() {
     const queryClient = useQueryClient();
     const { toast } = useToast();
 
-    const [accounts, setAccounts] = useState<Account[] | null>(null);
+    const [accounts, setAccounts] = useState<Account[]>([]);
+
+    const updateAccount = useMutation<Account, Error, number>({
+        mutationFn: async (accountId: number) => {
+            const response = await fetch(`${BASE_URL}/accounts/${accountId}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Failed to fetch account");
+            }
+            return response.json();
+        },
+        onSuccess: (data) => {
+            setAccounts((prevAccounts) => {
+                if (prevAccounts) {
+                    return addOrMergeAccounts(prevAccounts, data);
+                }
+                return [data];
+            });
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                title: "Failed to retrieve account",
+                description: error.message,
+            });
+        },
+    });
 
     const mutation = useMutation<Account, Error, NewAccount>({
         mutationFn: createAccount,
@@ -63,8 +91,9 @@ export function useAccounts() {
     });
 
     return {
-        accounts: accounts ?? [],
+        accounts: accounts,
         isLoading: mutation.isPending,
         createAccount: mutation.mutate,
-    };
+        updateAccount: updateAccount.mutate,
+    } as const;
 }

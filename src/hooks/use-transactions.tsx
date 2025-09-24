@@ -1,11 +1,15 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Transaction } from "@/lib/types";
+import {
+    UseMutateFunction,
+    useMutation,
+    useQueryClient,
+} from "@tanstack/react-query";
+import { Account, Transaction } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
-const BASE_URL = "http://localhost:8860";
+const BASE_URL = "http://localhost:9002/api";
 
 const createTransaction = async (
     newTransaction: Transaction
@@ -26,7 +30,9 @@ const createTransaction = async (
     return response.json();
 };
 
-export function useTransactions() {
+export function useTransactions(
+    updateAccount: UseMutateFunction<Account, Error, number, unknown>
+) {
     const queryClient = useQueryClient();
     const { toast } = useToast();
 
@@ -38,6 +44,8 @@ export function useTransactions() {
         mutationFn: createTransaction,
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["accounts"] });
+            updateAccount(data.source_account_id);
+            updateAccount(data.destination_account_id);
             setTransactions((prevTransactions) => {
                 const newData = {
                     ...data,
