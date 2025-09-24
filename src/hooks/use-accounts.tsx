@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Account, NewAccount } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
