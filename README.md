@@ -22,4 +22,5 @@ npm run dev
     - Everything is/should be handled by backend.
     - Interestingly, no GET methods are allowed for querying existing account balances or existing transactions. Traditionally this would be handled by the backend via a database, and not a great practice to store on the Frontend using any sort of local storage. Opting instead to keep everything in memory so every run is a fresh one.
 - Zod for validation, react-hook-form for form state management
- 
+- Basic unit test for business logic in `utils.test.ts`
+- e2e cypress test found in `account_and_transaction.e2e.cy.ts`
